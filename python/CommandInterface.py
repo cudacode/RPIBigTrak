@@ -90,27 +90,27 @@ class CommandInterface:
 		self.commandMode()
 
 	def fwdCallBack(self):
-		print ('Fire Command')
+		print ('Forward Command')
 		self.countMode()
 		self.cmdModel.newCommand('fwd')
 
 	def backCallBack(self):
-		print ('Fire Command')
+		print ('Back Command')
 		self.countMode()
 		self.cmdModel.newCommand('back')
 
 	def leftCallBack(self):
-		print ('Fire Command')
+		print ('Left Command')
 		self.countMode()
 		self.cmdModel.newCommand('left')
 
 	def rightCallBack(self):
-		print ('Fire Command')
+		print ('Right Command')
 		self.countMode()
 		self.cmdModel.newCommand('right')
 
 	def holdCallBack(self):
-		print ('Fire Command')
+		print ('Hold Command')
 		self.countMode()
 		self.cmdModel.newCommand('hold')
 
