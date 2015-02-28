@@ -19,6 +19,16 @@
 
 import Tkinter
 import math
+import time
+
+TANK_LENGTH = 13
+TANK_WIDTH = 6
+REVERSE_HEADING_ADJ = 3.14159265
+STARTING_HEADING = 3.14159265
+
+# The actual toy only allow entry of two digits and they made it so that 60 was a full
+# rotation of the tank.
+FULL_ROTATION_UNITS = 60
 
 class Robot:
 	'Test Class for Robot: should allow you to see the programmed movements'
@@ -27,11 +37,17 @@ class Robot:
 		self.top = Tkinter.Tk()
 		self.top.wm_title("Map")
 		self.top.geometry('{}x{}'.format(1000, 1000))
-		self.tank = Tkinter.Canvas(self.top, height=13, width=6, bg='blue')
+		# Tank is 13"x6"
+		self.tank = Tkinter.Canvas(self.top, height=TANK_LENGTH, width=TANK_WIDTH, bg='blue')
+		
+		#Start in the middle of the map
 		self.tankx = 500
 		self.tanky = 500
-		self.tankh = 3.1415926499999998
-		self.tank.place(x=500, y=500)
+		
+		#Heading is due North in Radians
+		self.tankh = STARTING_HEADING
+		
+		self.tank.place(x=self.tankx, y=self.tanky)
 		print ("Robot Ready")
 
 	def execute(self, command):
@@ -39,14 +55,46 @@ class Robot:
 
 		if command.name == 'fwd':
 			self.forward(int(command.param1))
+		elif command.name == 'back':
+			self.reverse(int(command.param1))
+		elif command.name == 'hold':
+			self.hold(int(command.param1))
+		elif command.name == 'left':
+			self.rotate(int(command.param1))
+		elif command.name == 'right':
+			self.rotate(-int(command.param1))
 
 	def forward(self, distance):
-		# Tank is 13" long so that is what 1 =
 		x = math.sin(self.tankh)
 		y = math.cos(self.tankh)
 		while distance > 0:
-			self.tankx = self.tankx + (13 * x)
-			self.tanky = self.tanky + (13 * y)
+			self.tankx = int(round(self.tankx + (TANK_LENGTH * x)))
+			self.tanky = int(round(self.tanky + (TANK_LENGTH * y)))
 			self.tank.place(x=self.tankx, y=self.tanky)
 			distance = distance - 1
 		print 'x=', self.tankx, ' y=', self.tanky
+		
+	def hold(self, seconds):
+		time.sleep(seconds)	
+	
+	# Doing left as adding rotation and right as subtracting 
+	def rotate(self, rotation):
+		print 'Heading:', self.tankh
+		print 'Rotation:', rotation
+		adjHeading = ((rotation / 60.0) * (2.0 * STARTING_HEADING))
+		print 'Adjustment:', adjHeading
+		self.tankh = self.tankh + adjHeading
+		print 'Heading:', self.tankh
+		
+	def reverse(self, distance):
+		revHeading = self.tankh - REVERSE_HEADING_ADJ
+		x = math.sin(revHeading)
+		y = math.cos(revHeading)
+		while distance > 0:
+			self.tankx = int(round(self.tankx + (TANK_LENGTH * x)))
+			self.tanky = int(round(self.tanky + (TANK_LENGTH * y)))
+			self.tank.place(x=self.tankx, y=self.tanky)
+			distance = distance - 1
+		print 'x=', self.tankx, ' y=', self.tanky
+		
+		
